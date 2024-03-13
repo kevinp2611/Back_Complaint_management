@@ -69,11 +69,29 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      role_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Roles",
+          key: "id",
+          as: "role_id",
+        },
+      },
     },
     {
       sequelize,
       modelName: "User",
+      defaultScope: {
+        attributes: {
+          exclude: ["password"],
+        },
+      },
     }
   );
+
+  User.addScope("removepassword", {
+    exclude: ["password"],
+  });
+
   return User;
 };
