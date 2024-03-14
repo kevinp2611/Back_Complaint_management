@@ -7,6 +7,9 @@ const {
 const { registerSchema } = require("../Schema/index");
 
 let resJSon;
+
+//Login Api
+
 const login = async (req, res) => {
   let accessToken;
   const { email, password } = req.body;
@@ -50,16 +53,20 @@ const login = async (req, res) => {
       message: "Authentication failed!",
     };
   }
-  res.send(resJSon);
+  res.status(resJSon.status).send(resJSon);
 };
+
+//Register Api
 
 const register = async (req, res) => {
   const result = await registerSchema.validate(req.body, {
     abortEarly: false,
   });
   const arr = {};
-  for (const element of result.error.details) {
-    arr[element.path[0]] = element.message;
+  if (result.err) {
+    for (const element of result.error.details) {
+      arr[element.path[0]] = element.message;
+    }
   }
 
   const {
@@ -72,7 +79,14 @@ const register = async (req, res) => {
     longitude,
   } = req.body;
   const password = await createPassword(req.body.password, 10);
-  const role_id = 1;
+  const { id } = await db.sequelize.models.Role.findOne({
+    raw: true,
+    attributes: ["id"],
+    where: {
+      slug: "user",
+    },
+  });
+  const role_id = id;
 
   const alreadyRegisterUser = await db.sequelize.models.User.findOne({
     where: {
@@ -112,7 +126,27 @@ const register = async (req, res) => {
   }
   res.send(resJSon);
 };
+
+const logout = async (req, res) => {
+  const userId = req.userId;
+  try {
+    await db.sequelize.models.User.update(
+      { accessToken: null },
+      { where: { id: userId } }
+    );
+
+    resJSon = {
+      status: 200,
+      message: "user succesfully logout",
+    };
+    res.status(200).send(resJSon);
+  } catch (error) {
+    res.status(500).send("something went Wrong");
+  }
+};
+
 module.exports = {
   login,
   register,
+  logout,
 };

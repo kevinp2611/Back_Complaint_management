@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const routes = require("./routes");
+var cors = require("cors");
 require("dotenv").config();
 
 express.application.prefix = express.Router.prefix = function (
@@ -14,7 +15,7 @@ express.application.prefix = express.Router.prefix = function (
   configure(router);
   return router;
 };
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

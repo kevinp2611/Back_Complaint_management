@@ -20,8 +20,18 @@ const generateAuthToken = async (user) => {
   return jwt.sign(payload, secret, options);
 };
 
+const decodeAuthToken = (token) => {
+
+  if (!token || token.trim().length === 0) {
+    res.status(401).send({ error: "The authentication token is required" });
+  }
+  const userToken = token.replace("Bearer ", "");
+  return jwt.verify(userToken, process.env.SECRET_KEY);
+};
+
 module.exports = {
   createPassword,
   comparePassword,
   generateAuthToken,
+  decodeAuthToken,
 };
