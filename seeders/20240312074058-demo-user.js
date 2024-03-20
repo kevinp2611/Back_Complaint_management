@@ -10,7 +10,7 @@ module.exports = {
       {
         firstName: "kevin",
         lastName: "paghadal",
-        email: "kevin@123",
+        email: "kevin@mailinatorsp.com",
         password: password,
         contactNo: "9456789045",
         address: "haveli streeet,ahemdabad",

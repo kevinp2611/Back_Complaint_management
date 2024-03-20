@@ -103,7 +103,7 @@ const register = async (req, res) => {
     resJSon = {
       error: "validation Fail",
       status: 403,
-      message: arr,
+      message: result.error,
     };
   } else {
     const savedUser = await db.sequelize.models.User.create({
